@@ -1,0 +1,7 @@
+/dist
+AuthKeys.*
+/node_modules
+/build
+/public
+*.pem
+/src/*.min.js

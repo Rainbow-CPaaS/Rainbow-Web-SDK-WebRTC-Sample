@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+        <script src="//cdnjs.cloudflare.com/ajax/libs/es5-shim/4.5.9/es5-shim.min.js"></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/es6-promise/4.0.5/es6-promise.min.js"></script>
+        <script src="//code.jquery.com/jquery-2.1.3.min.js"></script>
+        <script src="//cdn.jsdelivr.net/momentjs/2.15.1/moment-with-locales.min.js"></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.7.5/angular.min.js"></script>
+        <script src="./src/vendors-sdk.min.js"></script>
+        <script type="module" src="./src/script.js"></script>
+        <link href="./src/styles.css" rel="stylesheet" />
+
+        <title>Rainbow Web SDK - Chat Sample</title>
+    </head>
+    <body>
+        <div id="container">
+            <div id="userPanel">
+                <div id="loginForm">
+                    <img id="rainbowLogo" src="./src/img/logo.png" />
+                    <form method="post">
+                        <div id="formContainer">
+                            <input id="userName" type="text" placeholder="Enter Username" name="userName" required />
+                            <input id="password" type="password" placeholder="Enter Password" name="password" required />
+                            <button id="loginButton" type="button">Login</button>
+                        </div>
+                    </form>
+                </div>
+                <div id="userDetails">
+                    <div id="connectedUserName"></div>
+                    <div id="connectedUserId"></div>
+                    <div id="connectedUserPresence">Offline</div>
+                </div>
+            </div>
+            <div id="contactsContainer"></div>
+            <div id="mainContainer">
+                <div id="videoContainer">
+                    Local video:
+                    <div>
+                        <video class="videoElement" id="minivideo" autoplay muted></video>
+                    </div>
+                    <br />
+                    Remote video:
+                    <div>
+                        <video class="videoElement" id="largevideo" autoplay></video>
+                    </div>
+                </div>
+                <video id="globalVideoTag" autoplay style="display: none;"></video>
+                <audio id="globalAudioTag" autoplay style="display: none;"></audio>
+
+                <div id="callStatus"></div>
+            </div>
+        </div>
+    </body>
+</html>
