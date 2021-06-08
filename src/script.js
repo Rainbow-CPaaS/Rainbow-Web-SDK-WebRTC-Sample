@@ -123,6 +123,11 @@ window.rainbowSDK = rainbowSDK; // Global value is now accessible from the conso
         await rainbowSDK.webRTC.callInAudio(contactId);
     };
 
+    window.callInSharing = async (contactId) => {
+        console.log('Call in audio. Contact ID: ', contactId);
+        await rainbowSDK.webRTC.callInSharing(contactId);
+    };
+
     window.callInVideo = async (contactId) => {
         console.log('Call in video. Contact ID: ', contactId);
         await rainbowSDK.webRTC.callInVideo(contactId);
@@ -338,10 +343,14 @@ window.rainbowSDK = rainbowSDK; // Global value is now accessible from the conso
         }
 
         const contactCallAudioButton = document.getElementById('contactCallAudio-' + contact.id);
+        const contactCallSharingButton = document.getElementById('contactCallSharing-' + contact.id);
         const contactCallVideoButton = document.getElementById('contactCallVideo-' + contact.id);
         if ((contact.status === 'online' || contact.status === 'away') && !state.call && state.canMakeAudioVideoCall && state.hasACamera) {
             if (contactCallAudioButton) {
                 contactCallAudioButton.disabled = false;
+            }
+            if (contactCallSharingButton) {
+                contactCallSharingButton.disabled = false;
             }
             if (contactCallVideoButton) {
                 contactCallVideoButton.disabled = false;
@@ -349,6 +358,9 @@ window.rainbowSDK = rainbowSDK; // Global value is now accessible from the conso
         } else {
             if (contactCallAudioButton) {
                 contactCallAudioButton.disabled = true;
+            }
+            if (contactCallSharingButton) {
+                contactCallSharingButton.disabled = true;
             }
             if (contactCallVideoButton) {
                 contactCallVideoButton.disabled = true;
@@ -370,6 +382,19 @@ window.rainbowSDK = rainbowSDK; // Global value is now accessible from the conso
             callInAudio(contact.id);
         };
         contactCallAudio.disabled =
+            (contact.status === 'online' || contact.status === 'away') && !state.call && state.canMakeAudioVideoCall && state.hasACamera
+                ? false
+                : true;
+
+        // Create "Sharing Call" button
+        let contactCallSharing = document.createElement('button');
+        contactCallSharing.innerHTML = 'Sharing Call';
+        contactCallSharing.id = 'contactCallSharing-' + contact.id;
+        contactCallSharing.contactId = contact.id;
+        contactCallSharing.onclick = () => {
+            callInSharing(contact.id);
+        };
+        contactCallSharing.disabled =
             (contact.status === 'online' || contact.status === 'away') && !state.call && state.canMakeAudioVideoCall && state.hasACamera
                 ? false
                 : true;
@@ -398,6 +423,7 @@ window.rainbowSDK = rainbowSDK; // Global value is now accessible from the conso
         contactCard.appendChild(contactName);
         contactCard.appendChild(contactStatus);
         contactCard.appendChild(contactCallAudio);
+        contactCard.appendChild(contactCallSharing);
         contactCard.appendChild(contactCallVideo);
         return contactCard;
     }
