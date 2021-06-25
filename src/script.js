@@ -136,23 +136,23 @@ window.rainbowSDK = rainbowSDK; // Global value is now accessible from the conso
     window.releaseCall = () => {
         console.log('Release call');
         if (state.call) {
-            rainbowSDK.webRTC.release(state.call);
+            rainbowSDK.webRTC.release(state.call.id);
         } else {
             console.error('No call to release');
         }
     };
 
     window.answerInAudio = () => {
-        rainbowSDK.webRTC.answerInAudio(state.call);
+        rainbowSDK.webRTC.answerInAudio(state.call.id);
     };
 
     window.answerInVideo = () => {
-        rainbowSDK.webRTC.answerInVideo(state.call);
+        rainbowSDK.webRTC.answerInVideo(state.call.id);
     };
 
     window.muteCall = () => {
         try {
-            const call = rainbowSDK.webRTC.muteAudioCall(state.call.contact.conversation);
+            const call = rainbowSDK.webRTC.muteAudioCall(state.call.id);
             if (call.status.value === 'active' && call.isMuted) {
                 const callStatus = document.getElementById('callStatus');
                 const muteCallButton = document.getElementById('muteCallButton');
@@ -174,7 +174,7 @@ window.rainbowSDK = rainbowSDK; // Global value is now accessible from the conso
 
     window.unmuteCall = () => {
         try {
-            const call = rainbowSDK.webRTC.unmuteAudioCall(state.call.contact.conversation);
+            const call = rainbowSDK.webRTC.unmuteAudioCall(state.call.id);
             if (call.status.value === 'active' && !call.isMuted) {
                 const callStatus = document.getElementById('callStatus');
                 const unmuteCallButton = document.getElementById('unmuteCallButton');
@@ -247,7 +247,7 @@ window.rainbowSDK = rainbowSDK; // Global value is now accessible from the conso
 				<p>
 				Call id: ${call.id}
 				<p>
-				Contact name: ${call.contact.name.value}
+				Contact name: ${call.contact.fullname}
 			`;
 
             // Add hang up button
