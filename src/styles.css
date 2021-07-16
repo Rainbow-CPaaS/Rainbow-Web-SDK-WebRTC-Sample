@@ -54,6 +54,15 @@ body {
     box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
 }
 
+#devicePicker {
+    margin-top: 10px;
+    padding: 5px;
+    text-align: center;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    word-break: break-all;
+}
+
 input {
     width: 80%;
     margin-bottom: 5px;
@@ -62,6 +71,14 @@ input {
     border-radius: 5px;
     border: 0;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+}
+
+select {
+    margin-bottom: 7px;
+    width: 100%;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    height: 25px;
 }
 
 button {

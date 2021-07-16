@@ -31,6 +31,11 @@ window.rainbowSDK = rainbowSDK; // Global value is now accessible from the conso
         updateUserDetails();
         checkWebRtcCapabilities();
         getContacts();
+
+        /* Device picker works only in Chrome */
+        if (window.chrome) {
+            displayDevicePicker();
+        }
     }
 
     async function rainbowLogin() {
@@ -88,6 +93,145 @@ window.rainbowSDK = rainbowSDK; // Global value is now accessible from the conso
 		`;
 
         userDetails.appendChild(webRtcStatus);
+    }
+
+    async function displayDevicePicker() {
+        const userPanel = document.getElementById('userPanel');
+        if (userPanel) {
+            const devicePicker = document.createElement('div');
+            devicePicker.id = 'devicePicker';
+            const audioInput = [];
+            const audioOutput = [];
+            const videoInput = [];
+
+            navigator.mediaDevices
+                .getUserMedia({ audio: true, video: true })
+                .then((stream) => {
+                    /* Stream received which means that the user has authorized the application to access to the audio and video devices. Local stream can be stopped at this time */
+                    stream.getTracks().forEach((track) => {
+                        track.stop();
+                    });
+
+                    /*  Get the list of available devices */
+                    navigator.mediaDevices
+                        .enumerateDevices()
+                        .then((devices) => {
+                            /* Do something for each device (e.g. add it to a selector list) */
+                            devices.forEach(function (device) {
+                                switch (device.kind) {
+                                    case 'audioinput':
+                                        // This is a device of type 'microphone'
+                                        audioInput.push(device);
+                                        break;
+                                    case 'audiooutput':
+                                        // This is a device of type 'speaker'
+                                        audioOutput.push(device);
+                                        break;
+                                    case 'videoinput':
+                                        // This is a device of type 'camera'
+                                        videoInput.push(device);
+                                        break;
+                                    default:
+                                        break;
+                                }
+                            });
+
+                            const audioInputElement = document.createElement('select');
+                            audioInputElement.id = 'audioInputElement';
+                            const audioInputElementLabel = document.createElement('label');
+                            audioInputElementLabel.for = 'audioInputElement';
+                            audioInputElementLabel.innerHTML = 'Choose audio input:';
+                            audioInput.forEach((device) => {
+                                const option = document.createElement('option');
+                                option.innerHTML = device.label;
+                                audioInputElement.appendChild(option);
+                            });
+                            // audioInputElement.onfocus = () => {
+                            // this.selectedIndex = -1;
+                            // };
+                            audioInputElement.onchange = () => {
+                                console.log('Audio input change', audioInputElement.value);
+                                let deviceId = null;
+                                audioInput.forEach((device) => {
+                                    if (device.label === audioInputElement.value) {
+                                        deviceId = device.deviceId;
+                                    }
+                                });
+                                if (deviceId) {
+                                    rainbowSDK.webRTC.useMicrophone(deviceId);
+                                } else {
+                                    console.error("Couldn't change the audio input");
+                                }
+                            };
+                            devicePicker.appendChild(audioInputElementLabel);
+                            devicePicker.appendChild(audioInputElement);
+
+                            const audioOutputElement = document.createElement('select');
+                            audioOutputElement.id = 'audioOutputElement';
+                            const audioOutputElementLabel = document.createElement('label');
+                            audioOutputElementLabel.for = 'audioOutputElement';
+                            audioOutputElementLabel.innerHTML = 'Choose audio output:';
+                            audioOutput.forEach((device) => {
+                                const option = document.createElement('option');
+                                option.innerHTML = device.label;
+                                audioOutputElement.appendChild(option);
+                            });
+                            audioOutputElement.onchange = () => {
+                                console.log('Audio output change', audioOutputElement.value);
+                                let deviceId = null;
+                                audioOutput.forEach((device) => {
+                                    if (device.label === audioOutputElement.value) {
+                                        deviceId = device.deviceId;
+                                    }
+                                });
+                                if (deviceId) {
+                                    rainbowSDK.webRTC.useSpeaker(deviceId);
+                                } else {
+                                    console.error("Couldn't change the audio output");
+                                }
+                            };
+                            devicePicker.appendChild(audioOutputElementLabel);
+                            devicePicker.appendChild(audioOutputElement);
+
+                            const videoInputElement = document.createElement('select');
+                            videoInputElement.id = 'videoInputElement';
+                            const videoInputElementLabel = document.createElement('label');
+                            videoInputElementLabel.for = 'videoInputElement';
+                            videoInputElementLabel.innerHTML = 'Choose video input:';
+                            videoInput.forEach((device) => {
+                                const option = document.createElement('option');
+                                option.innerHTML = device.label;
+                                videoInputElement.appendChild(option);
+                            });
+                            videoInputElement.onchange = () => {
+                                console.log('Audio output change', videoInputElement.value);
+                                let deviceId = null;
+                                videoInput.forEach((device) => {
+                                    if (device.label === videoInputElement.value) {
+                                        deviceId = device.deviceId;
+                                    }
+                                });
+                                if (deviceId) {
+                                    rainbowSDK.webRTC.useCamera(deviceId);
+                                } else {
+                                    console.error("Couldn't change the video input");
+                                }
+                            };
+                            devicePicker.appendChild(videoInputElementLabel);
+                            devicePicker.appendChild(videoInputElement);
+
+                            userPanel.appendChild(devicePicker);
+                        })
+                        .catch((error) => {
+                            /* In case of error when enumerating the devices */
+                            throw error;
+                        });
+                })
+                .catch((error) => {
+                    /* In case of error when authorizing the application to access the media devices */
+                    throw error;
+                });
+        }
     }
 
     window.signOut = async () => {
@@ -467,5 +611,5 @@ window.rainbowSDK = rainbowSDK; // Global value is now accessible from the conso
 
     // **** Start the SDK
     rainbowSDK.start();
-    rainbowSDK.load({ verboseLog: true });
+    rainbowSDK.load({ verboseLog: false });
 })();
